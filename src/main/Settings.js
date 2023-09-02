@@ -6,9 +6,9 @@ import OS from "@/main/core/OS";
 import GetPath from "@/shared/utils/GetPath";
 
 export default class Settings {
-    static #instance;
-    static #fileName = SETTINGS_FILE_NAME;
-    static #fileExtension = 'json';
+    static #_instance;
+    static #_fileName = SETTINGS_FILE_NAME;
+    static #_fileExtension = 'json';
 
     static get(key) {
         return Settings.getInstance().get(key);
@@ -23,24 +23,24 @@ export default class Settings {
      * @returns {ElectronStore<T>}
      */
     static getInstance() {
-        if (Settings.#instance) {
-            return Settings.#instance;
+        if (Settings.#_instance) {
+            return Settings.#_instance;
         }
         Settings.init();
-        return Settings.#instance;
+        return Settings.#_instance;
     }
 
     static init() {
-        if (Settings.#instance) {
+        if (Settings.#_instance) {
             return;
         }
         const options = {
-            name: Settings.#fileName,
-            fileExtension: Settings.#fileExtension,
+            name: Settings.#_fileName,
+            fileExtension: Settings.#_fileExtension,
             cwd: Settings.getDir(),
         };
         options.defaults = Settings.getDefault();
-        Settings.#instance = new Store(options);
+        Settings.#_instance = new Store(options);
     }
 
     /**
@@ -52,9 +52,10 @@ export default class Settings {
             PhpVersion: '',
             EnableComposer: false,
             TextEditor: this.getDefaultTextEditorPath(),
+            WebsiteDir: Path.Join(App.getUserCoreDir(), 'www'),
             OneClickServerList: ['Nginx','PHP-FPM','MySQL-5.7'],
-            autoRestartWebServer: true,
-            autoStartPhpFpm: true,
+            AutoRestartWebServer: true,
+            AutoStartPhpFpm: true,
         };
         return obj;
     }
@@ -77,6 +78,6 @@ export default class Settings {
      * @returns {string}
      */
     static getFilePath(){
-        return Path.Join(Settings.getDir(), `${Settings.#fileName}.${Settings.#fileExtension}`);
+        return Path.Join(Settings.getDir(), `${Settings.#_fileName}.${Settings.#_fileExtension}`);
     }
 }
